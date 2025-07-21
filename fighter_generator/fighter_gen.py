@@ -10,7 +10,7 @@ class fighter_gen:
     self.speed = randint(3,5) + self.level
     self.apmax = 4 + int(self.level / 5)
     self.ap = 2
-    self.actifs = {
+    self.actifs = [
       {
         "code": 0,
         "multiplier": 0,
@@ -21,7 +21,7 @@ class fighter_gen:
         "multiplier": 0,
         "duration": 0
       }
-    }
+    ]
     self.actions =  self.actions_gen()
     
     # Atk and Def stats
