@@ -18,37 +18,46 @@ input_neural_network = [
     
     # remaining_duration: the number of round that the buff/debuff will be applied.
   
-    # 3 Actions that the player choose to do for each of his turns.
-    "code_1",
+    # 3 Actions that the player choose to do for each of his turns (each action can have 2 effects).
     "order_1",
-    "multiplier_1",
-    "duration_1",
+    "code_11",
+    "multiplier_11",
+    "duration_11",
+    "code_12",
+    "multiplier_12",
+    "duration_12",
     
-    "code_2",
     "order_2",
-    "multiplier_2",
-    "duration_2",
+    "code_21",
+    "multiplier_21",
+    "duration_21",
+    "code_22",
+    "multiplier_22",
+    "duration_22",
 
-    "code_3",
     "order_3",
-    "multiplier_3",
-    "duration_3",
+    "code_31",
+    "multiplier_31",
+    "duration_31",
+    "code_32",
+    "multiplier_32",
+    "duration_32",
     
     # 4 actifs that defines buffs/debuffs that are being applied in the actual
     
-    # AI buffs/debuffs
+    # AI buff/debuff
     "code_4",
     "multiplier_4",
-    "remaining_duration_4"
+    "remaining_duration_4",
 
     "code_5",
     "multiplier_5",
-    "remaining_duration_4"
+    "remaining_duration_4",
     
-    # Player buffs/debuffs
+    # Player buff/debuff
     "code_6",
     "multiplier_6",
-    "remaining_duration_6"
+    "remaining_duration_6",
 
     "code_7",
     "multiplier_7",
@@ -81,7 +90,7 @@ input_neural_network = [
     # States of the Player
     "ply_hpmax",
     "ply_hp",
-    "ply_lvl"
+    "ply_lvl",
     
     # States of the combat
     "round_count",
@@ -89,49 +98,63 @@ input_neural_network = [
     
     # AI actions that are available.
     
-    # We will consider 4 actions avalaible for now but basically
-    # the number of actions that the ai could do wil reduce or add at
-    # the number of available inputs and influence the numbers of outputs too,
-    # so later we will need to do 2 others models one for 2 actions and one
-    # for 3 actions.
-    "code_8",
+    # We have 4 actions max and 2 actions min (but we will set to 0 the stat corresponding 
+    # to the number of action the character has been created with), theses represents the
+    # actions that the ai can do, except skip action that it doesnt need to access
     "order_8",
-    "multiplier_8",
-    "duration_8",
+    "code_81",
+    "multiplier_81",
+    "duration_81",
+    "code_82",
+    "multiplier_82",
+    "duration_82",
     
-    "code_9",
     "order_9",
-    "multiplier_9",
-    "duration_9",
+    "code_91",
+    "multiplier_91",
+    "duration_91",
+    "code_92",
+    "multiplier_92",
+    "duration_92",
     
-    "code_10",
     "order_10",
-    "multiplier_10",
-    "duration_10",
+    "code_101",
+    "multiplier_101",
+    "duration_101",
+    "code_102",
+    "multiplier_102",
+    "duration_102",
     
-    "code_11",
     "order_11",
-    "multiplier_11",
-    "duration_11",
+    "code_111",
+    "multiplier_111",
+    "duration_111",
+    "code_112",
+    "multiplier_112",
+    "duration_112",
     
     # Recent actions that have been taken by the AI(everything will be 0 if the AI is in the first turn)
-    "code_12",
     "order_12",
-    "multiplier_12",
-    "duration_12",
+    "code_121",
+    "multiplier_121",
+    "duration_121",
+    "code_122",
+    "multiplier_122",
+    "duration_122",
     
-    "code_13",
     "order_13",
-    "multiplier_13",
-    "duration_13",
-  
+    "code_131",
+    "multiplier_131",
+    "duration_131",
+    "code_132",
+    "multiplier_132",
+    "duration_132"
 ]
 
 ouput_neural_network = [
   
-  # The AI will return as ouput the probability distribution of his 5 avalaible actions to do, 
-  # one of them is a skip, another one is a 0 ap_cost attack and the other 3 can be attack, buff, debuff.
-  # P1, P2, P3, P4 and P5 represent each a probabilty (higher or lower) of response to the probleme given to the AI
+  # The AI will return as ouput the probability distribution of his 5 avalaibles that it can do,
+  # (it can be 3, 4 or 5 actions depending of the number of actions that the character that the ai control has been created with)
   "P1",
   "P2",
   "P3",

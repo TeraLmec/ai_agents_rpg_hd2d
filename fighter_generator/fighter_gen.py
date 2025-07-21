@@ -34,7 +34,7 @@ class fighter_gen:
       int(init_stat * ((5 + choice([-5, 5]))/100)),
       int(init_stat * ((5 + choice([-5, 5]))/100))
     ]
-      
+
   def actions_gen(self):
     
     actions_nbr = randint(1,3)
