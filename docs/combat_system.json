@@ -1,0 +1,73 @@
+[
+  {
+    "enemy_actions": [
+      {
+        "id": "int",
+        "order": "int",
+        "code": "string (...)",
+        "multiplier": "float(..)",
+        "duration": "int"
+      },
+      {
+        "id": "int",
+        "order": "int",
+        "code": "string (...)",
+        "multiplier": "float(..)",
+        "duration": "int"
+      },
+      {
+        "id": "int",
+        "order": "int",
+        "code": "string (...)",
+        "multiplier": "float(..)",
+        "duration": "int"
+      }
+    ],
+    "states": [
+      {
+        "id": "int",
+        "lvl": "int",
+        "hp": "int",
+        "hpmax": "int",
+        "ap": "int",
+        "apmax": "int",
+        "speed": "int",
+        "stats": {
+          "phys_atk": "int",
+          "phys_def": "int",
+          "elem_atk": "int",
+          "elem_def": "int",
+          "spir_atk": "int",
+          "spir_def": "int"
+        }        
+      },
+      {
+        "hp": "int",
+        "hpmax": "int",
+        "lvl": "int"
+      }
+    ]
+  },
+  {
+    "ai_actions":[
+      {
+        "order": "int",
+        "code": "string (...)",
+        "multiplier": "float(..)",
+        "duration": "int"
+      },
+      {
+        "order": "int",
+        "code": "string (...)",
+        "multiplier": "float(..)",
+        "duration": "int"
+      },
+      {
+        "order": "int",
+        "code": "string (...)",
+        "multiplier": "float(..)",
+        "duration": "int"
+      }
+    ]
+  }
+]

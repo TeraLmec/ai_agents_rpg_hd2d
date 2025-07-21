@@ -1,0 +1,101 @@
+{
+  "battle_id": "btl-00042",
+  "tick": 19,
+  "state": {
+    "turn": 6,
+    "actions_left_in_turn": 2,
+    "rules": {
+      "max_actions_per_turn": 3,
+      "ap_gain_per_turn": 1
+    },
+    "ai_entity": {
+      "id": "player",
+      "class": "warrior",
+      "level": 4,
+      "hp": 83,
+      "hpMax": 120,
+      "ap": 3,
+      "apMax": 4,
+      "statistics": {
+        "physAtk": 42,
+        "physDef": 29,
+        "elemAtk": 15,
+        "elemDef": 14,
+        "spirAtk": 5,
+        "spirDef": 6
+      },
+      "buffs": [
+        { "code": "atk", "value": 0.2, "duration": 1 }
+      ],
+      "debuffs": [
+        { "code": "psn", "value": 5, "duration": 1 }
+      ]
+    },
+    "enemie_entity": [
+      {
+        "id": "goblin1",
+        "class": "monster",
+        "level": 3,
+        "hp": 47,
+        "hpMax": 90,
+        "ap": 2,
+        "apMax": 4,
+        "statistics": {
+          "physAtk": 28,
+          "physDef": 15,
+          "elemAtk": 5,
+          "elemDef": 8,
+          "spirAtk": 0,
+          "spirDef": 4
+        },
+        "buffs": [],
+        "debuffs": [
+          { "code": "imd", "value": 0.15, "duration": 1 }
+        ]
+      }
+    ],
+    "available_actions": [
+      {
+        "id": "free_slash",
+        "name": "Entaille rapide",
+        "code": "phy",
+        "cost": 0,
+        "baseMultiplier": 1.0,
+        "effects": [],
+        "targets": "enemy",
+        "slot": 1
+      },
+      {
+        "id": "power_strike",
+        "name": "Frappe puissante",
+        "code": "phy",
+        "cost": 2,
+        "baseMultiplier": 1.7,
+        "effects": [],
+        "targets": "enemy",
+        "slot": 2
+      },
+      {
+        "id": "battle_shout",
+        "name": "Cri de guerre",
+        "code": "atk",
+        "cost": 1,
+        "baseMultiplier": 0,
+        "effects": [
+          { "type": "atk_up", "value": 0.25, "duration": 2 }
+        ],
+        "targets": "self",
+        "slot": 3
+      },
+      {
+        "id": "skip",
+        "name": "Passer",
+        "code": "skp",
+        "cost": 0,
+        "effects": [],
+        "targets": "self",
+        "slot": 4
+      }
+    ]
+  }
+}

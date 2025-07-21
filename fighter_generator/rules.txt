@@ -1,0 +1,46 @@
+{
+  "level": [1, 5],
+  "hpMax": [80, 120] * level,
+  "hp": hpMax,
+  "speed": [3, 5] + level,
+  "apMax": 4 + (level %5),
+  "ap": apMax,
+  "stats": { (30 * level)
+    "principale atk": 30% ±5%, 
+    "principale def": 30% ±5%,
+    "neutre atk": 15% ±5%,
+    "neutre def": 15% ±5%,
+    "faible atk": 5% ±5%,
+    "faible def": 5% ±5%,
+  },
+  "actions": [
+    {
+      "id": 1,
+      "cost": 0,
+      "action": [
+        {
+          "code": 10,
+          "multiplier": 0, 
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "id": ...,
+      "cost": [0, 4],
+      "action": [ (si cost >= 2 alors 2 actions)
+        {
+          "code": ...,
+          "multiplier": [5, 15] * (cost + 1), 
+          "duration": pour dé/buff (cost - (multiplier %10))
+                       sinon et minimum 1
+        },
+        {
+          "code": ...,
+          "multiplier": ...,
+          "duration": ...
+        }
+      ]
+    }
+  ]
+}
