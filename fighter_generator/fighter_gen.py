@@ -1,7 +1,8 @@
 from random import randint, choice
+import os
 import json
 
-class fighter_gen:
+class FighterGen:
   def __init__(self):
     # Basic stats
     self.level = randint(1,5)
@@ -115,8 +116,15 @@ class fighter_gen:
       actions.append(action)
       
     return actions
-  
-  def generate(self):
+
+  def generate(self, out_filename="generated_enemy.json", out_dir=None):
+    # 1. Chemin vers le dossier data à la racine du projet
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_dir = out_dir or os.path.join(project_root, "data")
+    os.makedirs(data_dir, exist_ok=True)
+
+    # 2. Sérialisation dans data/<out_filename>
+    out_path = os.path.join(data_dir, out_filename)
     fighter_stats = {
       "level": self.level,
       "hpMax": self.hpmax,
@@ -126,7 +134,7 @@ class fighter_gen:
       "ap": self.ap,
       "actifs": self.actifs,
       "stats": {
-        "principale atk": self.stats[0], 
+        "principale atk": self.stats[0],
         "principale def": self.stats[1],
         "neutre atk": self.stats[2],
         "neutre def": self.stats[3],
@@ -135,9 +143,8 @@ class fighter_gen:
       },
       "actions": self.actions
     }
-    
-    with open("fighter.json", "w") as f:
-      json.dump(fighter_stats, f, indent=2)
-      
-fighter = fighter_gen()
-fighter.generate()
+
+    with open(out_path, "w", encoding="utf-8") as f:
+      json.dump(fighter_stats, f, indent=2, ensure_ascii=False)
+
+    return out_path

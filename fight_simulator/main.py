@@ -1,22 +1,37 @@
+import os
+import json
 from entities import CombatEntity, CombatAction
 from engine import CombatSimulator
-from utils.effect import Effect
 
-ai_stats = {"physAtk": 42, "physDef": 29, "elemAtk": 15, "elemDef": 14, "spirAtk": 5, "spirDef": 6}
-enemy_stats = {"physAtk": 28, "physDef": 15, "elemAtk": 5, "elemDef": 8, "spirAtk": 0, "spirDef": 4}
+# 1) Chemin vers le dossier data
+BASE_DIR = os.path.dirname(__file__)
+DATA_DIR = os.path.join(BASE_DIR, 'data')
 
-ai = CombatEntity("warrior", 4, 83, 120, 3, 4, 5, ai_stats, buffs=[Effect("atk", 0.2, 1)], debuffs=[])
-enemy = CombatEntity("goblin", 3, 47, 90, 2, 4, 4, enemy_stats)
+# Fonction utilitaire pour charger une entité sans champ "id" dans le JSON
+def load_entity(json_path):
+    name = os.path.splitext(os.path.basename(json_path))[0]
+    with open(json_path, encoding='utf-8') as f:
+        data = json.load(f)
+    entity = CombatEntity.from_dict(data)
+    entity.id = name  # définir l'id à partir du nom de fichier
+    return entity
 
-actions = [
-    CombatAction("free_slash", "phy", 0, 1.0, 0),
-    CombatAction("power_strike", "phy", 2, 1.7, 0),
-    CombatAction("battle_shout", "atk", 1, 0, 2)
-]
+# 2) Chargement de l'IA et de l’ennemi
+ai_entity = load_entity(os.path.join(DATA_DIR, 'fighter.json'))
+enemy_entity = load_entity(os.path.join(DATA_DIR, 'enemy.json'))
 
-rules = { "max_actions_per_turn": 3, "ap_gain_per_turn": 1 }
+# 3) Construction de la liste d’actions disponibles (depuis l'IA)
+with open(os.path.join(DATA_DIR, 'fighter.json'), encoding='utf-8') as f:
+    ai_data = json.load(f)
+actions = [CombatAction.from_dict(a) for a in ai_data.get('actions', [])]
 
-sim = CombatSimulator(ai, enemy, actions, rules)
+# 4) Règles de combat
+rules = {
+    'max_actions_per_turn': 3,
+    'ap_gain_per_turn': 1
+}
 
-while ai.is_alive() and enemy.is_alive():
+# 5) Lancement de la simulation
+sim = CombatSimulator(ai_entity, enemy_entity, actions, rules)
+while ai_entity.is_alive() and enemy_entity.is_alive():
     sim.run_turn()
