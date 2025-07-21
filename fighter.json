@@ -1,0 +1,82 @@
+{
+  "level": 3,
+  "hpMax": 294,
+  "hp": 294,
+  "speed": 8,
+  "apMax": 4,
+  "ap": 2,
+  "stats": {
+    "principale atk": 22,
+    "principale def": 22,
+    "neutre atk": 9,
+    "neutre def": 18,
+    "faible atk": 9,
+    "faible def": 9
+  },
+  "actions": [
+    {
+      "id": 1,
+      "cost": 0,
+      "effects": [
+        {
+          "code": 2,
+          "multiplier": 2,
+          "duration": 1
+        },
+        {
+          "code": 0,
+          "multiplier": 0,
+          "duration": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "cost": 0,
+      "effects": [
+        {
+          "code": 10,
+          "multiplier": 0,
+          "duration": 1
+        },
+        {
+          "code": 0,
+          "multiplier": 0,
+          "duration": 0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "cost": 4,
+      "effects": [
+        {
+          "code": 1,
+          "multiplier": 65,
+          "duration": 1
+        },
+        {
+          "code": 7,
+          "multiplier": 45,
+          "duration": 2
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "cost": 3,
+      "effects": [
+        {
+          "code": 6,
+          "multiplier": 20,
+          "duration": 2
+        },
+        {
+          "code": 1,
+          "multiplier": 56,
+          "duration": 1
+        }
+      ]
+    }
+  ]
+}
