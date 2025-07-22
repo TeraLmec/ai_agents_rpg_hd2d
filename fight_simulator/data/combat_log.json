@@ -1,0 +1,28 @@
+{
+  "order_1": 1,
+  "code_11": 0,
+  "multiplier_11": 0,
+  "duration_11": 0,
+  "code_12": 0,
+  "multiplier_12": 0,
+  "duration_12": 0,
+  
+  "order_2": 2,
+  "code_21": 0,
+  "multiplier_21": 0,
+  "duration_21": 0,
+  "code_22": 0,
+  "multiplier_22": 0,
+  "duration_22": 0,
+
+  "order_3": 3,
+  "code_31": 0,
+  "multiplier_31": 0,
+  "duration_31": 0,
+  "code_32": 0,
+  "multiplier_32": 0,
+  "duration_32": 0,
+  
+  "round_count": 1,
+  "action_left": 3
+}

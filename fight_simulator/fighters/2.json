@@ -1,7 +1,7 @@
 {
   "level": 3,
-  "hpMax": 240,
-  "hp": 240,
+  "hpMax": 315,
+  "hp": 315,
   "speed": 6,
   "apMax": 4,
   "ap": 2,
@@ -31,8 +31,8 @@
       "cost": 0,
       "effects": [
         {
-          "code": 2,
-          "multiplier": 5,
+          "code": 1,
+          "multiplier": 3,
           "duration": 1
         },
         {
@@ -60,33 +60,49 @@
     },
     {
       "id": 3,
-      "cost": 3,
-      "effects": [
-        {
-          "code": 5,
-          "multiplier": 28,
-          "duration": 2
-        },
-        {
-          "code": 7,
-          "multiplier": 56,
-          "duration": 1
-        }
-      ]
-    },
-    {
-      "id": 4,
       "cost": 1,
       "effects": [
         {
-          "code": 6,
-          "multiplier": 10,
+          "code": 4,
+          "multiplier": 26,
           "duration": 1
         },
         {
           "code": 0,
           "multiplier": 0,
           "duration": 0
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "cost": 4,
+      "effects": [
+        {
+          "code": 9,
+          "multiplier": 45,
+          "duration": 2
+        },
+        {
+          "code": 6,
+          "multiplier": 50,
+          "duration": 2
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "cost": 4,
+      "effects": [
+        {
+          "code": 1,
+          "multiplier": 60,
+          "duration": 1
+        },
+        {
+          "code": 9,
+          "multiplier": 40,
+          "duration": 2
         }
       ]
     }

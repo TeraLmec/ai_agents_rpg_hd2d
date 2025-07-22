@@ -6,8 +6,8 @@ from fighter_generator.fighter_gen import fighter_gen
 class fight_simulator:
     
   def generate_fighters(self):
-    fighter_gen().generate("player.json","fs2/fighters")
-    fighter_gen().generate("enemy.json","fs2/fighters")
+    fighter_gen().generate("1.json","fight_simulator/fighters")
+    fighter_gen().generate("2.json","fight_simulator/fighters")
     
 simulator = fight_simulator()
 simulator.generate_fighters()
