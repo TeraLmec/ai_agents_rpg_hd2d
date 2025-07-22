@@ -1,8 +1,7 @@
 from random import randint, choice
-import os
-import json
+import json, os
 
-class FighterGen:
+class fighter_gen:
   def __init__(self):
     # Basic stats
     self.level = randint(1,5)
@@ -35,7 +34,7 @@ class FighterGen:
       int(init_stat * ((5 + choice([-5, 5]))/100)),
       int(init_stat * ((5 + choice([-5, 5]))/100))
     ]
-      
+
   def actions_gen(self):
     
     actions_nbr = randint(1,3)
@@ -116,7 +115,7 @@ class FighterGen:
       actions.append(action)
       
     return actions
-
+  
   def generate(self, out_filename="generated_enemy.json", out_dir=None):
     # 1. Chemin vers le dossier data à la racine du projet
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
