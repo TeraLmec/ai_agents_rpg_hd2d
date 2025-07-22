@@ -1,3 +1,4 @@
+# fight_simulator/utils/logger.py
 class Logger:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -24,4 +25,8 @@ class Logger:
 
     @staticmethod
     def info(msg):
+        print(Logger.WARNING + msg + Logger.ENDC)
+
+    @staticmethod
+    def warning(msg):
         print(Logger.WARNING + msg + Logger.ENDC)

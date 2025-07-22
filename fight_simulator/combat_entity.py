@@ -1,7 +1,7 @@
 from utils.effect import Effect
 
 class CombatEntity:
-    def __init__(self, id, level, hp, hp_max, ap, ap_max, speed, stats, buffs=None, debuffs=None):
+    def __init__(self, id, level, hp, hp_max, ap, ap_max, speed, stats, actions=None, buffs=None, debuffs=None):
         self.id = id
         self.level = level
         self.hp = hp
@@ -10,6 +10,7 @@ class CombatEntity:
         self.ap_max = ap_max
         self.speed = speed
         self.stats = stats
+        self.actions = actions or []
         self.buffs = buffs or []
         self.debuffs = debuffs or []
 
@@ -20,6 +21,7 @@ class CombatEntity:
         debuffs = [Effect(d["code"], d["value"], d["duration"])
                    for d in data.get("debuffs", [])]
         stats = data.get("statistics", data.get("stats", {}))
+        actions = data.get("actions", [])
         return cls(
             id=data.get("id", "unknown"),
             level=data["level"],
@@ -29,6 +31,7 @@ class CombatEntity:
             ap_max=data["apMax"],
             speed=data["speed"],
             stats=stats,
+            actions=actions,
             buffs=buffs,
             debuffs=debuffs
         )
