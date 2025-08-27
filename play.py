@@ -188,7 +188,7 @@ def fmt_effect_short(e: Dict[str, Any]) -> str:
 
 
 def fmt_effect_verbose(e: Dict[str, Any]) -> str:
-    if not e:
+    if not e or e.get("code", 0) == 0:
         return "-"
     short, num, sign, fr, color = _meta_from_code(e.get("code", 0))
     mult = int(e.get("multiplier", e.get("mult", 0)))
@@ -202,6 +202,7 @@ def fmt_effect_verbose(e: Dict[str, Any]) -> str:
     if extra:
         head += " (" + ", ".join(extra) + ")"
     return head + f" — {fr}"
+
 
 
 def legend_panel() -> str:
@@ -433,7 +434,8 @@ def play(model_path: str, my_level: int, ai_level: int, use_gpu: bool = True) ->
 
 
 if __name__ == "__main__":
-    model_path = "checkpoints/best_final.pt"
-    my_level = 4
-    ai_level = 4
+    # model_path = "checkpoints/best_final.pt"
+    model_path = "checkpoints/best_so_far.pt"
+    my_level = 5
+    ai_level = 5
     play(model_path=model_path, my_level=my_level, ai_level=ai_level)

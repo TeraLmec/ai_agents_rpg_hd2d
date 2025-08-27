@@ -31,25 +31,26 @@ class PolicyMLP(torch.nn.Module):
 # ------------------------------
 @dataclass
 class EAConfig:
-    pop_size: int = 128
-    elites: int = 10
+    pop_size: int = 256
+    generation: int = 256
+    elites: int = 8
     tournament_k: int = 3
-    crossover_rate: float = 0.7
-    mut_prob: float = 0.08             # per-parameter probability 0.08
-    mut_sigma_scale: float = 0.05      # sigma = scale * tensor.std() 0.05
+    crossover_rate: float = 0.65
+    mut_prob: float = 0.12             # per-parameter probability 0.08
+    mut_sigma_scale: float = 0.08      # sigma = scale * tensor.std() 0.05
     mut_sigma_floor: float = 0.02      # minimum sigma if std is tiny 0.02
-    eval_K: int = 32                    # episodes per individual
+    eval_K: int = 64                    # episodes per individual
     device: str = "cuda"
     seed: int = 1234
     save_dir: str = "checkpoints"
     batch_eval: bool = True             # use batched evaluator
-    batch_size: int = 8                 # concurrent envs per evaluation
+    batch_size: int = 2048                 # concurrent envs per evaluation
 
-    w_hp_margin: float = 0.25           # scale for HP margin term
-    w_brevity: float = 0.10             # scale favoring shorter fights
-    w_skip_pen: float = 0.01            # penalty per voluntary skip by AI
+    w_hp_margin: float = 0.2           # scale for HP margin term
+    w_brevity: float = 0.15             # scale favoring shorter fights
+    w_skip_pen: float = 0.05            # penalty per voluntary skip by AI
     w_stun_pen: float = 0.02            # penalty per AI turn lost to stun
-    w_no_damage_pen: float = 0.10       # penalty if AI deals zero total damage in an episode
+    w_no_damage_pen: float = 0.05       # penalty if AI deals zero total damage in an episode
 
 
 # ------------------------------
@@ -276,7 +277,7 @@ def main():
         make_fighter_pairs=make_fighter_pairs_fn,
         cfg=cfg,
     )
-    result = engine.run(generations=5)   # adjust as you like
+    result = engine.run(generations=cfg.generation)   # adjust as you like
     print("\n=== BEST ===")
     print(f"fitness={result['best_fit']:.4f} outcome={result['best_outcome']:.3f}")
     # Save final best (already saved as best_so_far.pt during training)

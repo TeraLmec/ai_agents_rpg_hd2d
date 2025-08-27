@@ -8,7 +8,7 @@ class fighter_gen:
 
   def actions_gen(self):
     
-    actions_nbr = randint(1,3)
+    actions_nbr = choice([1,2,2,3,3])
     actions = [
       {
         "id": 1,
@@ -16,24 +16,8 @@ class fighter_gen:
         "effects":[
           {
             "code": randint(1,3),
-            "multiplier": randint(2,5),
+            "multiplier": randint(5,9), # randint(2,5)
             "duration": 1
-          },
-          {
-            "code": 0,
-            "multiplier": 0,
-            "duration": 0
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "cost": 0,
-        "effects":[
-          {
-            "code": 10,
-            "multiplier": 0,
-            "duration": 1,
           },
           {
             "code": 0,
@@ -55,7 +39,7 @@ class fighter_gen:
       proba_list = [1,2,3,4]
       for j in range(min(2,cost)):
         proba_effect = choice(proba_list)
-        multiplier = randint(5,15) * (cost + 1)
+        multiplier = randint(10,18) * (cost + 1) # randint(5,15) * (cost + 1)
         if(proba_effect == 1 or proba_effect == 2):
           proba_list.remove(1)
           proba_list.remove(2)
