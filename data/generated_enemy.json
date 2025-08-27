@@ -1,7 +1,7 @@
 {
   "level": 3,
-  "hpMax": 315,
-  "hp": 315,
+  "hpMax": 276,
+  "hp": 276,
   "speed": 6,
   "apMax": 4,
   "ap": 2,
@@ -18,12 +18,12 @@
     }
   ],
   "stats": {
-    "principale atk": 22,
-    "principale def": 31,
-    "neutre atk": 18,
-    "neutre def": 18,
-    "faible atk": 0,
-    "faible def": 9
+    "phy_atk": 31,
+    "phy_def": 22,
+    "spi_atk": 9,
+    "spi_def": 18,
+    "ele_atk": 0,
+    "ele_def": 0
   },
   "actions": [
     {
@@ -32,7 +32,7 @@
       "effects": [
         {
           "code": 1,
-          "multiplier": 3,
+          "multiplier": 2,
           "duration": 1
         },
         {
@@ -60,49 +60,17 @@
     },
     {
       "id": 3,
-      "cost": 1,
+      "cost": 3,
       "effects": [
         {
-          "code": 4,
-          "multiplier": 26,
+          "code": 3,
+          "multiplier": 56,
           "duration": 1
         },
         {
-          "code": 0,
-          "multiplier": 0,
-          "duration": 0
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "cost": 4,
-      "effects": [
-        {
-          "code": 9,
-          "multiplier": 45,
-          "duration": 2
-        },
-        {
-          "code": 6,
-          "multiplier": 50,
-          "duration": 2
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "cost": 4,
-      "effects": [
-        {
-          "code": 1,
-          "multiplier": 60,
+          "code": 5,
+          "multiplier": 44,
           "duration": 1
-        },
-        {
-          "code": 9,
-          "multiplier": 40,
-          "duration": 2
         }
       ]
     }
