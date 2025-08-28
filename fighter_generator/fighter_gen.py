@@ -1,6 +1,92 @@
 from random import randint, choice
 import json, os
 
+# --- Bounds helper (keeps fighter_gen behavior intact) -----------------------
+# These reflect the exact formulas used in fighter_gen so other modules
+# (like the normalizer) can derive consistent min/max per current level.
+
+class FighterGenBounds:
+    """
+    Pure helper (no side effects) that mirrors fighter_gen formulas.
+    Use FighterGenBounds.at_level(L) to get per-level dynamic bounds.
+    """
+
+    # static “global” ceilings implied by the generator
+    COST_MIN, COST_MAX = 0, 4
+    CODE_MIN, CODE_MAX = 0, 10
+    DURATION_MIN, DURATION_MAX = 0, 4  # generator effectively clamps to >=1, keep headroom
+    MULT_BASE_MIN, MULT_BASE_MAX = 20, 25  # used for random effects
+    MULT_COST_MIN, MULT_COST_MAX = 1, 4    # random actions cost in [1..4]
+    MULT_FIXED_MIN, MULT_FIXED_MAX = 15, 20  # for a few predefined effects at cost 0
+
+    @classmethod
+    def eff_multiplier_minmax(cls) -> tuple[float, float]:
+        # Random effects: randint(20,25) * (cost+1) with cost in [1..4] -> [20*2 .. 25*5] = [40..125]
+        rand_min = cls.MULT_BASE_MIN * (cls.MULT_COST_MIN + 1)
+        rand_max = cls.MULT_BASE_MAX * (cls.MULT_COST_MAX + 1)
+        # Fixed effects exist at cost 0: [15..20]
+        return (0.0, max(rand_max, cls.MULT_FIXED_MAX))  # [0 .. 125]
+
+    @staticmethod
+    def hpmax_at_level(level: int) -> tuple[float, float]:
+        # In generator: r in [80..120];  hpMax = r + r * (level-1) * 0.75
+        r_min, r_max = 80.0, 120.0
+        mult = 1.0 + max(0, level - 1) * 0.75
+        return (r_min * mult, r_max * mult)
+
+    @staticmethod
+    def speed_at_level(level: int) -> tuple[float, float]:
+        # speed = randint(3,5) + level
+        return (3 + level, 5 + level)
+
+    @staticmethod
+    def apmax_at_level(level: int) -> tuple[float, float]:
+        # apMax = 4 + int(level/5)  -> 4 (L<5) or 5 (L==5)
+        return (4.0, 4.0 + (1.0 if level >= 5 else 0.0))
+
+    @staticmethod
+    def ap_range(level: int) -> tuple[float, float]:
+        lo, hi = FighterGenBounds.apmax_at_level(level)
+        return (0.0, hi)
+
+    @staticmethod
+    def stat_max_at_level(level: int) -> float:
+        # init_stat = 30 * level
+        # principale up to 35% → 0.35 * 30 * level = 10.5 * level
+        return 10.5 * level
+
+    @classmethod
+    def at_level(cls, level: int) -> dict:
+        """Convenience bundle of dynamic bounds for a given level."""
+        hp_lo, hp_hi = cls.hpmax_at_level(level)
+        spd_lo, spd_hi = cls.speed_at_level(level)
+        apM_lo, apM_hi = cls.apmax_at_level(level)
+        ap_lo, ap_hi = cls.ap_range(level)
+        mult_lo, mult_hi = cls.eff_multiplier_minmax()
+        stat_hi = cls.stat_max_at_level(level)
+        return {
+            "level": (1.0, 5.0),
+            "hpMax": (hp_lo, hp_hi),
+            "hp":    (0.0, hp_hi),
+            "speed": (spd_lo, spd_hi),
+            "apMax": (apM_lo, apM_hi),
+            "ap":    (ap_lo, ap_hi),
+
+            # detailed stats (we normalize vs principale ceiling for safety)
+            "stat":  (0.0, stat_hi),
+
+            # action/effect fields
+            "cost":       (cls.COST_MIN, cls.COST_MAX),
+            "code":       (cls.CODE_MIN, cls.CODE_MAX),
+            "multiplier": (mult_lo, mult_hi),
+            "duration":   (cls.DURATION_MIN, cls.DURATION_MAX),
+
+            # combat state fields
+            "round_count": (0.0, 50.0),  # keep env cap headroom
+            "action_left": (0.0, 3.0),   # MAX_ACTIONS_PER_TURN
+        }
+
+
 class fighter_gen:
   def __init__(self):
     # No pre-generated state. Randomness happens on each generate call.

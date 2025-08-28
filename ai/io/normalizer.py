@@ -1,111 +1,102 @@
+# normalizer.py — normalization driven by fighter_gen's formulas
+from __future__ import annotations
+
+from fighter_generator.fighter_gen import FighterGenBounds
+
 def normalizer(data: dict) -> dict:
+    """
+    Normalize the exact 92-feature structure your state_encoder expects,
+    but derive min/max from fighter_gen's formulas at the CURRENT AI level.
+    Output structure is unchanged.
+    """
+    def clamp01(x: float) -> float:
+        return 0.0 if x <= 0.0 else (1.0 if x >= 1.0 else x)
 
-    min_max_dict = {
-        # Fighter level and basic stats
-        "level": {"min": 0, "max": 5},
-        "hpMax": {"min": 0, "max": 480},
-        "hp": {"min": 0, "max": 480},
-        "speed": {"min": 0, "max": 10},
-        "apMax": {"min": 0, "max": 5},
-        "ap": {"min": 0, "max": 5},
-        "stat": {"min": 0, "max": 187},
-
-        # Action costs
-        "cost": {"min": 0, "max": 4},
-
-        # Effect codes
-        "code": {"min": 0, "max": 10},
-        "multiplier": {"min": 0, "max": 75},
-        "duration": {"min": 0, "max": 4},
-
-        # Combat states
-        "round_count": {"min": 0, "max": 100},
-        "action_left": {"min": 0, "max": 3}
-    }
-
-    def normalize_value(value, field_name):
-        """Normalize a single value based on its field name"""
-        if field_name in min_max_dict:
-            min_val = min_max_dict[field_name]["min"]
-            max_val = min_max_dict[field_name]["max"]
-            # === CHANGED: clamp to [0,1] for safety ==================
-            if max_val != min_val:
-                norm = (value - min_val) / (max_val - min_val)
-                return max(0.0, min(1.0, norm))  # CHANGED
+    def norm_val(v, lo, hi) -> float:
+        lo = float(lo); hi = float(hi)
+        if hi <= lo:  # safety
             return 0.0
-        return value
+        return clamp01((float(v) - lo) / (hi - lo))
 
-    def normalize_effect(effect):
-        """Normalize an effect object"""
+    # --- 1) determine the AI level and retrieve dynamic bounds --------------
+    ai_src = data["combat_stats"]["ai_stats"]
+    level = int(ai_src.get("level", 1))
+    level = 1 if level < 1 else (5 if level > 5 else level)
+    B = FighterGenBounds.at_level(level)
+
+    # Small helpers for common fields
+    def n_cost(x):  lo,hi = B["cost"];       return norm_val(x, lo, hi)
+    def n_code(x):  lo,hi = B["code"];       return norm_val(x, lo, hi)
+    def n_mult(x):  lo,hi = B["multiplier"]; return norm_val(x, lo, hi)
+    def n_dur(x):   lo,hi = B["duration"];   return norm_val(x, lo, hi)
+
+    def norm_effect(e: dict) -> dict:
         return {
-            "code": normalize_value(effect["code"], "code"),
-            "multiplier": normalize_value(effect["multiplier"], "multiplier"),
-            "duration": normalize_value(effect["duration"], "duration")
+            "code":       n_code(e["code"]),
+            "multiplier": n_mult(e["multiplier"]),
+            "duration":   n_dur(e["duration"]),
         }
 
-    def normalize_action(action):
-        """Normalize an action object"""
+    def norm_action(a: dict) -> dict:
         return {
-            "cost": normalize_value(action["cost"], "cost"),
-            "effects": [normalize_effect(effect) for effect in action["effects"]]
+            "cost":    n_cost(a["cost"]),
+            "effects": [norm_effect(x) for x in a["effects"]],
         }
 
-    # Create normalized data structure
-    normalized_data = {}
+    out = {}
 
-    # Normalize enemy recent actions
-    normalized_data["enemy_recent_actions"] = [
-        normalize_action(action) for action in data["enemy_recent_actions"]
-    ]
+    # --- 2) enemy recent actions (3) ----------------------------------------
+    out["enemy_recent_actions"] = [norm_action(a) for a in data["enemy_recent_actions"]]
 
-    # Normalize actifs
-    normalized_data["actifs"] = {
-        "ai_actifs": [normalize_effect(actif) for actif in data["actifs"]["ai_actifs"]],
-        "enemy_actifs": [normalize_effect(actif) for actif in data["actifs"]["enemy_actifs"]]
+    # --- 3) actifs (ai + enemy) ---------------------------------------------
+    out["actifs"] = {
+        "ai_actifs":    [norm_effect(x) for x in data["actifs"]["ai_actifs"]],
+        "enemy_actifs": [norm_effect(x) for x in data["actifs"]["enemy_actifs"]],
     }
 
-    # Normalize combat stats
-    ai_stats = data["combat_stats"]["ai_stats"]
-    enemy_stats = data["combat_stats"]["enemy_stats"]
+    # --- 4) combat stats (ai + enemy) ---------------------------------------
+    # ai
+    hpMax_lo, hpMax_hi = B["hpMax"]
+    hp_lo, hp_hi       = B["hp"]
+    spd_lo, spd_hi     = B["speed"]
+    apM_lo, apM_hi     = B["apMax"]
+    ap_lo, ap_hi       = B["ap"]
+    stat_lo, stat_hi   = B["stat"]
 
-    normalized_data["combat_stats"] = {
+    out["combat_stats"] = {
         "ai_stats": {
-            "level": normalize_value(ai_stats["level"], "level"),
-            "hpMax": normalize_value(ai_stats["hpMax"], "hpMax"),
-            "hp": normalize_value(ai_stats["hp"], "hp"),
-            "speed": normalize_value(ai_stats["speed"], "speed"),
-            "apMax": normalize_value(ai_stats["apMax"], "apMax"),
-            "ap": normalize_value(ai_stats["ap"], "ap"),
+            "level": norm_val(ai_src["level"], *B["level"]),
+            "hpMax": norm_val(ai_src["hpMax"], hpMax_lo, hpMax_hi),
+            "hp":    norm_val(ai_src["hp"],    hp_lo,    hp_hi),
+            "speed": norm_val(ai_src["speed"], spd_lo,   spd_hi),
+            "apMax": norm_val(ai_src["apMax"], apM_lo,   apM_hi),
+            "ap":    norm_val(ai_src["ap"],    ap_lo,    ap_hi),
             "stats": {
-                "phy_atk": normalize_value(ai_stats["stats"]["phy_atk"], "stat"),
-                "phy_def": normalize_value(ai_stats["stats"]["phy_def"], "stat"),
-                "spi_atk": normalize_value(ai_stats["stats"]["spi_atk"], "stat"),
-                "spi_def": normalize_value(ai_stats["stats"]["spi_def"], "stat"),
-                "ele_atk": normalize_value(ai_stats["stats"]["ele_atk"], "stat"),
-                "ele_def": normalize_value(ai_stats["stats"]["ele_def"], "stat")
-            }
+                "phy_atk": norm_val(ai_src["stats"]["phy_atk"], stat_lo, stat_hi),
+                "phy_def": norm_val(ai_src["stats"]["phy_def"], stat_lo, stat_hi),
+                "spi_atk": norm_val(ai_src["stats"]["spi_atk"], stat_lo, stat_hi),
+                "spi_def": norm_val(ai_src["stats"]["spi_def"], stat_lo, stat_hi),
+                "ele_atk": norm_val(ai_src["stats"]["ele_atk"], stat_lo, stat_hi),
+                "ele_def": norm_val(ai_src["stats"]["ele_def"], stat_lo, stat_hi),
+            },
         },
+        # enemy (we don’t know enemy level’s role allocation → use same per-AI level ranges;
+        # this matches how you trained/encode and keeps magnitudes consistent)
         "enemy_stats": {
-            "level": normalize_value(enemy_stats["level"], "level"),
-            "hpMax": normalize_value(enemy_stats["hpMax"], "hpMax"),
-            "hp": normalize_value(enemy_stats["hp"], "hp")
-        }
+            "level": norm_val(data["combat_stats"]["enemy_stats"]["level"], *B["level"]),
+            "hpMax": norm_val(data["combat_stats"]["enemy_stats"]["hpMax"], hpMax_lo, hpMax_hi),
+            "hp":    norm_val(data["combat_stats"]["enemy_stats"]["hp"],    hp_lo,    hp_hi),
+        },
     }
 
-    # Normalize combat states
-    normalized_data["combat_states"] = {
-        "round_count": normalize_value(data["combat_states"]["round_count"], "round_count"),
-        "action_left": normalize_value(data["combat_states"]["action_left"], "action_left")
+    # --- 5) combat states ----------------------------------------------------
+    out["combat_states"] = {
+        "round_count": norm_val(data["combat_states"]["round_count"], *B["round_count"]),
+        "action_left": norm_val(data["combat_states"]["action_left"], *B["action_left"]),
     }
 
-    # === CHANGED: fix key name 'ai_available_actions' = consistent ===
-    normalized_data["ai_available_actions"] = [      # CHANGED
-        normalize_action(action) for action in data["ai_available_actions"]  # CHANGED
-    ]
+    # --- 6) available actions (4) + history (2) ------------------------------
+    out["ai_available_actions"] = [norm_action(a) for a in data["ai_available_actions"]]
+    out["ai_actions_history"]   = [norm_action(a) for a in data["ai_actions_history"]]
 
-    # Normalize actions history
-    normalized_data["ai_actions_history"] = [
-        normalize_action(action) for action in data["ai_actions_history"]
-    ]
-
-    return normalized_data
+    return out
