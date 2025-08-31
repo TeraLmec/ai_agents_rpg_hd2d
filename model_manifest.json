@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "inputs": {
+    "features": {
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        92
+      ],
+      "feature_order": [],
+      "normalization": "none"
+    }
+  },
+  "outputs": {
+    "logits": {
+      "shape": [
+        "batch",
+        5
+      ],
+      "semantics": [
+        "prob_action1",
+        "prob_action2",
+        "prob_action3",
+        "prob_action4",
+        "prob_skip"
+      ]
+    }
+  },
+  "postproc": {
+    "selection": {
+      "type": "argmax_or_topk",
+      "k": 1
+    },
+    "masking": "engine_side"
+  }
+}

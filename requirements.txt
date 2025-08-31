@@ -1,2 +1,13 @@
-colorama==0.4.6
-torch==2.8.0+cu128
+# Noyau numérique et utils
+numpy==1.26.4
+pandas==2.2.2
+tqdm==4.66.4
+
+# Deep Learning
+torch==2.3.1
+
+# RL / Environnements
+gymnasium==0.29.1
+
+# Algorithmes évolutionnaires (journal ea\_log.csv)
+deap==1.4.1
